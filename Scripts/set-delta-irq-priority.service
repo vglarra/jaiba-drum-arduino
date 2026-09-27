@@ -1,0 +1,16 @@
+[Unit]
+Description=Set Delta 1010LT (ICE1712) IRQ thread priority
+Documentation=file:/home/jaiba/Documents/SW/JaibaDrumProjects/Docs/AUDIO_MIGRATION_REPORT.md
+After=sound.target sysinit.target
+Wants=sound.target
+Before=multi-user.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+# Discovers the IRQ thread by driver name at runtime, so this survives
+# IRQ renumbering and PCI slot changes. Retries until the thread appears.
+ExecStart=/usr/local/sbin/set-delta-irq-priority.sh 80
+
+[Install]
+WantedBy=multi-user.target

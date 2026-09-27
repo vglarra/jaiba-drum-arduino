@@ -8,8 +8,10 @@
 /jaiba-hexa-drum-ui/
 /jaiba-sampler/
 
-# Scripts dir currently empty; ignore until it has tracked content
-/Scripts/
+# Scripts/ now holds tracked setup/migration tooling (audio + Teensy), so it is
+# no longer ignored. Build artifacts those scripts produce stay out.
+/Scripts/**/build/
+/Scripts/**/*.hex
 
 # OS / editor noise
 .DS_Store
