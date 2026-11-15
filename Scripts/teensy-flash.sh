@@ -79,15 +79,27 @@ done
 
 # --------------------------------------------------------------------------
 # Teensy USB discovery
-#   running board    : 16c0:0483  (USB Serial, has a ttyACM)
-#   bootloader board : 16c0:0478  (Halfkay HID, no ttyACM)
+#   vendor           : 16c0     (PJRC / Teensyduino)
+#   bootloader board : 16c0:0478 (Halfkay HID, no ttyACM)
+#   running board    : any other 16c0 product ID — the PID encodes the USB
+#                      Type, not the board model. Examples:
+#                        0483 USB Serial
+#                        0489 Serial + MIDI   <-- sensor firmware (serialmidi)
+#                        0485 MIDI
+#                        04D2 Audio
+#                      Do NOT whitelist only 0483: the sensor sketch is built
+#                      with usb=serialmidi (0x0489), so an 0483-only scan
+#                      reports "no Teensy boards detected" while a perfectly
+#                      healthy sensor board is plugged in and running.
 # --------------------------------------------------------------------------
 declare -a TD_DEV=() TD_PID=() TD_PROD=() TD_TTY=()
 
 find_tty_for() {
     local dev="$1" d
     for d in /sys/bus/usb/devices/"$dev"/*/tty/ttyACM*; do
-        [ -e "$d" ] && { basename "$d"; return 0; }
+        # arduino-cli needs the full device path (/dev/ttyACM0), not the bare
+        # sysfs node name — passing "ttyACM0" makes upload fail to find the port.
+        [ -e "$d" ] && { printf '/dev/%s\n' "$(basename "$d")"; return 0; }
     done
     return 1
 }
@@ -100,10 +112,7 @@ scan_teensies() {
         vid="$(cat "$d/idVendor" 2>/dev/null || true)"
         [ "$vid" = "16c0" ] || continue
         pid="$(cat "$d/idProduct" 2>/dev/null || true)"
-        case "$pid" in
-            0483|0478) ;;
-            *) continue ;;
-        esac
+        [ -n "$pid" ] || continue
         dev="$(basename "$d")"
         prod="$(cat "$d/product" 2>/dev/null || echo 'Teensy')"
         tty="$(find_tty_for "$dev" || true)"
@@ -113,7 +122,7 @@ scan_teensies() {
 
 show_boards() {
     if [ "${#TD_DEV[@]}" -eq 0 ]; then
-        warn "no Teensy boards detected (16c0:0483 running, 16c0:0478 bootloader)"
+        warn "no Teensy boards detected (16c0 vendor; 16c0:0478 = bootloader, any other PID = running)"
         return 1
     fi
     printf '  %-10s %-10s %-10s %-14s %s\n' "HUB PATH" "USB ID" "MODE" "PORT" "PRODUCT"

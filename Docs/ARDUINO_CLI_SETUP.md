@@ -17,7 +17,11 @@ ACM ports by enumeration order. What IS stable is the USB hub path:
 Check identities with `arduino-cli board list` and/or
 `for d in /sys/bus/usb/devices/*/; do ...` (16c0 vendor). Verify before flashing:
 a board in the bootloader shows as `16c0:0478` (Halfkay) and has NO ttyACM port;
-a running board shows as `16c0:0483` (USB Serial).
+a running board shows as `16c0:0483` (USB Serial). A running board's PID encodes
+its USB Type, not the board: the Sensor firmware is built with `usb=serialmidi`
+and shows **`16c0:0489`** (Serial + MIDI). A discovery scan that only accepts
+`0483` will miss a healthy sensor board; match vendor `16c0` and treat every PID
+except `0478` as a running Teensy.
 
 ## USB permissions — FIXED (2026-09-06)
 

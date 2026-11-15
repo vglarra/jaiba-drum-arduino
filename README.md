@@ -18,6 +18,7 @@ the live/canonical implementation and may run ahead of the PlatformIO sources.
 | `Docs/AUDIO_WORKSTATION.md` | audio workstation config: Delta 1010LT, ALSA routing, sampler latency settings |
 | `Docs/AUDIO_MIGRATION_REPORT.md` | moving the audio tuning + sound-card setup to a new PC (inventory, runbook, findings) |
 | `Docs/JAIBA_SAMPLER_ROADMAP.md` | sampler roadmap: multi-MIDI device requirement + latency analysis |
+| `Docs/CONTROL_HUB_ESP32_PLAN.md` | control-hub + ESP32 7" LVGL UI implementation plan |
 | `Scripts/` | setup/migration tooling for the audio workstation and Teensy toolchain |
 
 ## Setup & migration scripts
@@ -39,7 +40,8 @@ the full runbooks.
 ## Related repositories (own repos — cloned into this workspace, not tracked here)
 
 - **Sensor PlatformIO source:** https://github.com/vglarra/jaiba-hexa-drum-sensor-code
-- **UI PlatformIO source:** https://github.com/vglarra/jaiba-hexa-drum-ui
+- **UI PlatformIO source (Teensy hub + legacy TFT UI):** https://github.com/vglarra/jaiba-hexa-drum-ui
+- **ESP32 7" UI (CrowPanel LVGL):** https://github.com/vglarra/jaiba-hexa-drum-esp32-ui
 - **Sampler (JUCE):** https://github.com/vglarra/jaiba-sampler
 
 The `.ino` files are conversions of the PlatformIO sources into single Arduino
@@ -54,6 +56,8 @@ workflow is retired.
   cal button 3, curve button 4. Status LED on pin 13: heartbeat + flash on
   UART TX.
 - **UI Teensy** (hub 1-1.6): ST7796 (SPI 13/11/12/10/8/9) + XPT2046 (CS 6).
+- **ESP32 UI:** CrowPanel 7.0" (DIS08070H, ESP32-S3, 800×480, GT911); talks to
+  the Teensy hub over I2C only. See `Docs/CONTROL_HUB_ESP32_PLAN.md`.
 - Drum ↔ UI link: hardware Serial1 pins 0/1 crossed, 115200 baud
   (protocol in `UART_PROTOCOL.md` of the component repos).
 

@@ -1,11 +1,12 @@
 # Jaiba Drum — Arduino-IDE deliverables + docs
-# The three hardware/software projects below live in their OWN repositories
+# The four hardware/software projects below live in their OWN repositories
 # (they are cloned here for the workspace); this repo only tracks the
 # single-file Arduino sketches that are flashed to the Teensys + Docs.
 
 # Existing per-project repositories (own GitHub repos + git history)
 /jaiba-hexa-drum-sensor-code/
 /jaiba-hexa-drum-ui/
+/jaiba-hexa-drum-esp32-ui/
 /jaiba-sampler/
 
 # Scripts/ now holds tracked setup/migration tooling (audio + Teensy), so it is

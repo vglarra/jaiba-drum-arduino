@@ -294,12 +294,15 @@ path:
 
 | Board | USB hub path | USB ID (running) | USB ID (bootloader) |
 |---|---|---|---|
-| Sensor Teensy | `1-1.5` | `16c0:0483` | `16c0:0478` |
-| UI Teensy | `1-1.6` | `16c0:0483` | `16c0:0478` |
+| Sensor Teensy | `1-1.5` | `16c0:0489` (Serial + MIDI) | `16c0:0478` |
+| UI Teensy | `1-1.6` | `16c0:0483` (USB Serial) | `16c0:0478` |
 
 A board in the Halfkay bootloader shows as `16c0:0478` and has **no ttyACM
-port**; a running board shows `16c0:0483` (USB Serial). Always check before
-flashing.
+port**. A running board's PID encodes its USB Type, not the board model:
+`0483` = Serial, `0489` = Serial + MIDI (the sensor firmware, built with
+`usb=serialmidi`), `0485` = MIDI, etc. When scanning for connected boards,
+match vendor `16c0` and treat every PID except `0478` as a running Teensy —
+never whitelist only `0483`, or the sensor board will look absent.
 
 ### 10.2 ⚠️ Never upload while BOTH Teensys are connected
 
